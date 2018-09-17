@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.ajaxfenye.dao.UserDao">
+    <resultMap id="UserMap" type="User">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <association property="teacher" column="sid" javaType="Teacher" select="com.java.ajaxfenye.dao.TeacherDao.select"></association>
+    </resultMap>
+<select id="selectAll" resultMap="UserMap">
+    select * from users
+</select>
+
+    <select id="getByPage" parameterType="com.java.ajaxfenye.utils.PageUtil" resultMap="UserMap">
+        select * from users order  by id desc LIMIT #{startIndex},#{pageSize}
+    </select>
+
+    <insert id="insert" parameterType="User" useGeneratedKeys="true">
+        insert into users(name,password,sid) values (#{name},#{password},#{sid})
+    </insert>
+
+    <update id="update" parameterType="User" >
+        update users
+          <set>
+              <if test="name != null">name = #{name},</if>
+              <if test="password!=null">password=#{password},</if>
+              <if test="sid!=null">sid=#{sid}</if>
+          </set>
+        where id = #{id}
+    </update>
+
+    <select id="selectById" parameterType="integer" resultMap="UserMap">
+        select * from users where id = #{id}
+    </select>
+</mapper>
